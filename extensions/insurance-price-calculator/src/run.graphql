@@ -1,0 +1,28 @@
+query RunInput {
+  cart {
+    lines {
+      id
+      quantity
+      cost {
+        amountPerQuantity {
+          amount
+        }
+        subtotalAmount {
+          amount
+        }
+      }
+      merchandise {
+        ... on ProductVariant {
+          id
+          product {
+            title
+            hasTags(tags: ["Insurance"]) {
+              tag
+              hasTag
+            }
+          }
+        }
+      }
+    }
+  }
+}
