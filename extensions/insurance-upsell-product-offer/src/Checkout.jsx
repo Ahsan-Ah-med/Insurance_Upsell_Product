@@ -63,6 +63,7 @@ function App() {
             nodes {
               id
               title
+              description
               images(first:1){
                 nodes {
                   url
@@ -152,7 +153,7 @@ function getProductsOnOffer(lines, products) {
 }
 
 function ProductOffer({ product, i18n, adding, handleAddToCart, showError }) {
-  const { images, title, variants } = product;
+  const { images, title, variants, description } = product;
   const renderPrice = i18n.formatCurrency(variants.nodes[0].price.amount);
   const imageUrl =
     images.nodes[0]?.url ??
@@ -180,7 +181,7 @@ function ProductOffer({ product, i18n, adding, handleAddToCart, showError }) {
             <Text size="medium" emphasis="strong">
               {title}
             </Text>
-            <Text appearance="subdued">Fee Calculated based on Cart subtotal</Text>
+            <Text appearance="subdued">{description}</Text>
           </BlockStack>
           <Button
             kind="secondary"
