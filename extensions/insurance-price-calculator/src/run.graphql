@@ -20,6 +20,9 @@ query RunInput {
               tag
               hasTag
             }
+            metafield(namespace: "custom", key: "fee_charges_in_percentage") {
+              value
+            }
           }
         }
       }

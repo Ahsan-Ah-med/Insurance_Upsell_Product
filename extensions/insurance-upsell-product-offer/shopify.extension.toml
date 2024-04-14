@@ -43,9 +43,13 @@ api_access = true
 # your extension. Learn more:
 # https://shopify.dev/docs/api/checkout-ui-extensions/unstable/configuration#settings-definition
 
-# [extensions.settings]
-# [[extensions.settings.fields]]
-# key = "banner_title"
-# type = "single_line_text_field"
-# name = "Banner title"
-# description = "Enter a title for the banner"
+ #[extensions.settings]
+ [settings]
+ 
+
+ [[settings.fields]]
+ key = "upsell"
+ type = "single_line_text_field"
+ name = "Upsell Product Name"
+ description = "Please Copy Your Product Name then paste here"
+

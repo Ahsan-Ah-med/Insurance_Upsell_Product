@@ -14,6 +14,7 @@ import {
   useCartLines,
   useApplyCartLinesChange,
   useApi,
+  useSettings,
 } from "@shopify/ui-extensions-react/checkout";
 // Set up the entry point for the extension
 export default reactExtension("purchase.checkout.block.render", () => <App />);
@@ -26,6 +27,7 @@ function App() {
   const [adding, setAdding] = useState(false);
   const [showError, setShowError] = useState(false);
   const lines = useCartLines();
+  const { upsell } = useSettings();
 
   useEffect(() => {
     fetchProducts();
@@ -38,26 +40,26 @@ function App() {
     }
   }, [showError]);
 
-    async function handleAddToCart(variantId) {
-      setAdding(true);
-      const result = await applyCartLinesChange({
-        type: 'addCartLine',
-        merchandiseId: variantId,
-        quantity: 1,
-      });
-      setAdding(false);
-      if (result.type === 'error') {
-        setShowError(true);
-        console.error(result.message);
-      }
+  async function handleAddToCart(variantId) {
+    setAdding(true);
+    const result = await applyCartLinesChange({
+      type: "addCartLine",
+      merchandiseId: variantId,
+      quantity: 1,
+    });
+    setAdding(false);
+    if (result.type === "error") {
+      setShowError(true);
+      console.error(result.message);
     }
+  }
 
   async function fetchProducts() {
     setLoading(true);
     try {
       const { data } = await query(
         `query  {
-          products(first: 1, query: "Insurance Fee") {
+          products(first: 1, query: "${upsell}") {
             nodes {
               id
               title
@@ -79,7 +81,7 @@ function App() {
         }`,
         {
           variables: { first: 1 },
-        }
+        },
       );
       setProducts(data.products.nodes);
     } catch (error) {
@@ -116,21 +118,21 @@ function App() {
 
 function LoadingSkeleton() {
   return (
-    <BlockStack spacing='loose'>
+    <BlockStack spacing="loose">
       <Divider />
-      <Heading level={2}>You might also like</Heading>
-      <BlockStack spacing='loose'>
+      <Heading level={2}>You may also like</Heading>
+      <BlockStack spacing="loose">
         <InlineLayout
-          spacing='base'
-          columns={[64, 'fill', 'auto']}
-          blockAlignment='center'
+          spacing="base"
+          columns={[64, "fill", "auto"]}
+          blockAlignment="center"
         >
           <SkeletonImage aspectRatio={1} />
-          <BlockStack spacing='none'>
-            <SkeletonText inlineSize='large' />
-            <SkeletonText inlineSize='small' />
+          <BlockStack spacing="none">
+            <SkeletonText inlineSize="large" />
+            <SkeletonText inlineSize="small" />
           </BlockStack>
-          <Button kind='secondary' disabled={true}>
+          <Button kind="secondary" disabled={true}>
             Add
           </Button>
         </InlineLayout>
@@ -143,7 +145,7 @@ function getProductsOnOffer(lines, products) {
   const cartLineProductVariantIds = lines.map((item) => item.merchandise.id);
   return products.filter((product) => {
     const isProductVariantInCart = product.variants.nodes.some(({ id }) =>
-      cartLineProductVariantIds.includes(id)
+      cartLineProductVariantIds.includes(id),
     );
     return !isProductVariantInCart;
   });
@@ -154,34 +156,34 @@ function ProductOffer({ product, i18n, adding, handleAddToCart, showError }) {
   const renderPrice = i18n.formatCurrency(variants.nodes[0].price.amount);
   const imageUrl =
     images.nodes[0]?.url ??
-    'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_medium.png?format=webp&v=1530129081';
+    "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_medium.png?format=webp&v=1530129081";
 
   return (
-    <BlockStack spacing='loose'>
+    <BlockStack spacing="loose">
       <Divider />
-      <Heading level={2}>You might also like</Heading>
-      <BlockStack spacing='loose'>
+      <Heading level={2}>You may also like</Heading>
+      <BlockStack spacing="loose">
         <InlineLayout
-          spacing='base'
-          columns={[64, 'fill', 'auto']}
-          blockAlignment='center'
+          spacing="base"
+          columns={[64, "fill", "auto"]}
+          blockAlignment="center"
         >
           <Image
-            border='base'
-            borderWidth='base'
-            borderRadius='loose'
+            border="base"
+            borderWidth="base"
+            borderRadius="loose"
             source={imageUrl}
             description={title}
             aspectRatio={1}
           />
-          <BlockStack spacing='none'>
-            <Text size='medium' emphasis='strong'>
+          <BlockStack spacing="none">
+            <Text size="medium" emphasis="strong">
               {title}
             </Text>
-            <Text appearance='subdued'>Fee Calculated Based on SubTotal</Text>
+            <Text appearance="subdued">Fee Calculated based on Cart subtotal</Text>
           </BlockStack>
           <Button
-            kind='secondary'
+            kind="secondary"
             loading={adding}
             accessibilityLabel={`Add ${title} to cart`}
             onPress={() => handleAddToCart(variants.nodes[0].id)}
@@ -197,7 +199,7 @@ function ProductOffer({ product, i18n, adding, handleAddToCart, showError }) {
 
 function ErrorBanner() {
   return (
-    <Banner status='critical'>
+    <Banner status="critical">
       There was an issue adding this product. Please try again.
     </Banner>
   );
