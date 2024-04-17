@@ -58,7 +58,7 @@ function App() {
     setLoading(true);
     try {
       const { data } = await query(
-        `query  {
+        `query {
           products(first: 1, query: "${upsell}") {
             nodes {
               id
@@ -121,7 +121,7 @@ function LoadingSkeleton() {
   return (
     <BlockStack spacing="loose">
       <Divider />
-      <Heading level={2}>You may also like</Heading>
+      <Heading level={2}>You might also like</Heading>
       <BlockStack spacing="loose">
         <InlineLayout
           spacing="base"
@@ -148,7 +148,8 @@ function getProductsOnOffer(lines, products) {
     const isProductVariantInCart = product.variants.nodes.some(({ id }) =>
       cartLineProductVariantIds.includes(id),
     );
-    return !isProductVariantInCart;
+    // Return true to keep the product in the list regardless of whether it's in the cart or not
+    return true;
   });
 }
 
@@ -159,10 +160,28 @@ function ProductOffer({ product, i18n, adding, handleAddToCart, showError }) {
     images.nodes[0]?.url ??
     "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_medium.png?format=webp&v=1530129081";
 
+  const linesData = useCartLines();
+  const isAvailable = linesData.find(
+    (line) => line?.merchandise?.id === variants?.nodes[0]?.id,
+  );
+  console.log(isAvailable);
+  const applyCartLinesChange = useApplyCartLinesChange();
+  
+  async function removeFromCart() {
+    const removeItem = await applyCartLinesChange({
+      type: "removeCartLine",
+      id: isAvailable?.id,
+      quantity: 1,
+    });
+    removeItem.type == "success"
+      ? console.log(removeItem.type)
+      : console.error(removeItem.message);
+  }
+
   return (
     <BlockStack spacing="loose">
       <Divider />
-      <Heading level={2}>You may also like</Heading>
+      <Heading level={2}>You might also like</Heading>
       <BlockStack spacing="loose">
         <InlineLayout
           spacing="base"
@@ -187,9 +206,13 @@ function ProductOffer({ product, i18n, adding, handleAddToCart, showError }) {
             kind="secondary"
             loading={adding}
             accessibilityLabel={`Add ${title} to cart`}
-            onPress={() => handleAddToCart(variants.nodes[0].id)}
+            onPress={() =>
+              !isAvailable
+                ? handleAddToCart(variants.nodes[0].id)
+                : removeFromCart()
+            }
           >
-            Add
+            {!isAvailable ? "Add" : "Remove"}
           </Button>
         </InlineLayout>
       </BlockStack>

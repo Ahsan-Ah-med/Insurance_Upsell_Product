@@ -32,10 +32,13 @@ export function run(input: RunInput): FunctionRunResult {
   console.log(percentValue);
   // const finalCartTotal = (cartTotal / 100) * 10;
   const finalCartTotal2 = (cartTotal / 100) * Number(percentValue!);
-  console.log(finalCartTotal2) 
+  console.log(finalCartTotal2);
 
   const operations = input.cart.lines.map((cartLine) => {
     // console.log("testing1");
+    console.log(
+      (cartLine.merchandise as ProductVariant)?.product?.metafield?.value,
+    );
     return {
       update: {
         cartLineId: cartLine.id,

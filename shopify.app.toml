@@ -3,7 +3,7 @@
 client_id = "a70fa8cb537266ff4040dcf5baca3662"
 name = "insurance-upsell-product"
 handle = "insurance-upsell-product"
-application_url = "https://mon-plasma-copying-ws.trycloudflare.com"
+application_url = "https://predict-buying-broker-labeled.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://mon-plasma-copying-ws.trycloudflare.com/auth/callback",
-  "https://mon-plasma-copying-ws.trycloudflare.com/auth/shopify/callback",
-  "https://mon-plasma-copying-ws.trycloudflare.com/api/auth/callback"
+  "https://predict-buying-broker-labeled.trycloudflare.com/auth/callback",
+  "https://predict-buying-broker-labeled.trycloudflare.com/auth/shopify/callback",
+  "https://predict-buying-broker-labeled.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
