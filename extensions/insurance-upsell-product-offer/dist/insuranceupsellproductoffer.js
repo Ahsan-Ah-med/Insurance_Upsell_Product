@@ -19596,6 +19596,9 @@ ${errorInfo.componentStack}`);
     const lines = useCartLines();
     const { upsell } = useSettings();
     (0, import_react20.useEffect)(() => {
+      fetchProducts();
+    }, []);
+    (0, import_react20.useEffect)(() => {
       if (showError) {
         const timer = setTimeout(() => setShowError(false), 3e3);
         return () => clearTimeout(timer);
@@ -19621,7 +19624,7 @@ ${errorInfo.componentStack}`);
         setLoading(true);
         try {
           const { data } = yield query(
-            `query  {
+            `query {
           products(first: 1, query: "${upsell}") {
             nodes {
               id
@@ -19661,10 +19664,6 @@ ${errorInfo.componentStack}`);
     if (!loading && products.length === 0) {
       return null;
     }
-    (0, import_react20.useEffect)(() => {
-      fetchProducts();
-    }, []);
-    D;
     const productsOnOffer = getProductsOnOffer(lines, products);
     if (!productsOnOffer.length) {
       return null;
@@ -19683,7 +19682,7 @@ ${errorInfo.componentStack}`);
   function LoadingSkeleton() {
     return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockStack2, { spacing: "loose", children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Divider2, {}),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Heading2, { level: 2, children: "You may also like" }),
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Heading2, { level: 2, children: "Insure with PyroProtect" }),
       /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(BlockStack2, { spacing: "loose", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
         InlineLayout2,
         {
@@ -19708,7 +19707,7 @@ ${errorInfo.componentStack}`);
       const isProductVariantInCart = product.variants.nodes.some(
         ({ id }) => cartLineProductVariantIds.includes(id)
       );
-      return !isProductVariantInCart;
+      return true;
     });
   }
   function ProductOffer({ product, i18n, adding, handleAddToCart, showError }) {
@@ -19716,9 +19715,28 @@ ${errorInfo.componentStack}`);
     const { images, title, variants, description } = product;
     const renderPrice = i18n.formatCurrency(variants.nodes[0].price.amount);
     const imageUrl = (_b = (_a = images.nodes[0]) == null ? void 0 : _a.url) != null ? _b : "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_medium.png?format=webp&v=1530129081";
+    const linesData = useCartLines();
+    const isAvailable = linesData.find(
+      (line) => {
+        var _a2, _b2;
+        return ((_a2 = line == null ? void 0 : line.merchandise) == null ? void 0 : _a2.id) === ((_b2 = variants == null ? void 0 : variants.nodes[0]) == null ? void 0 : _b2.id);
+      }
+    );
+    console.log(isAvailable);
+    const applyCartLinesChange = useApplyCartLinesChange();
+    function removeFromCart() {
+      return __async(this, null, function* () {
+        const removeItem = yield applyCartLinesChange({
+          type: "removeCartLine",
+          id: isAvailable == null ? void 0 : isAvailable.id,
+          quantity: 1
+        });
+        removeItem.type == "success" ? console.log(removeItem.type) : console.error(removeItem.message);
+      });
+    }
     return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockStack2, { spacing: "loose", children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Divider2, {}),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Heading2, { level: 2, children: "You may also like" }),
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Heading2, { level: 2, children: "Insure with PyroProtect" }),
       /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(BlockStack2, { spacing: "loose", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
         InlineLayout2,
         {
@@ -19747,8 +19765,8 @@ ${errorInfo.componentStack}`);
                 kind: "secondary",
                 loading: adding,
                 accessibilityLabel: `Add ${title} to cart`,
-                onPress: () => handleAddToCart(variants.nodes[0].id),
-                children: "Add"
+                onPress: () => !isAvailable ? handleAddToCart(variants.nodes[0].id) : removeFromCart(),
+                children: !isAvailable ? "Add" : "Remove"
               }
             )
           ]

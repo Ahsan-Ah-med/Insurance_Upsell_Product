@@ -3,7 +3,7 @@
 client_id = "a70fa8cb537266ff4040dcf5baca3662"
 name = "insurance-upsell-product"
 handle = "insurance-upsell-product"
-application_url = "https://predict-buying-broker-labeled.trycloudflare.com"
+application_url = "https://ones-trademarks-twist-segments.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://predict-buying-broker-labeled.trycloudflare.com/auth/callback",
-  "https://predict-buying-broker-labeled.trycloudflare.com/auth/shopify/callback",
-  "https://predict-buying-broker-labeled.trycloudflare.com/api/auth/callback"
+  "https://ones-trademarks-twist-segments.trycloudflare.com/auth/callback",
+  "https://ones-trademarks-twist-segments.trycloudflare.com/auth/shopify/callback",
+  "https://ones-trademarks-twist-segments.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

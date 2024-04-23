@@ -121,7 +121,7 @@ function LoadingSkeleton() {
   return (
     <BlockStack spacing="loose">
       <Divider />
-      <Heading level={2}>You might also like</Heading>
+      <Heading level={2}>Insure with PyroProtect</Heading>
       <BlockStack spacing="loose">
         <InlineLayout
           spacing="base"
@@ -181,7 +181,7 @@ function ProductOffer({ product, i18n, adding, handleAddToCart, showError }) {
   return (
     <BlockStack spacing="loose">
       <Divider />
-      <Heading level={2}>You might also like</Heading>
+      <Heading level={2}>Insure with PyroProtect</Heading>
       <BlockStack spacing="loose">
         <InlineLayout
           spacing="base"
